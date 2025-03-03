@@ -6,7 +6,7 @@ import pydeck as pdk
 # Load dataset
 @st.cache_data  # Cache data to improve performance
 def load_data():
-    file_path = "IndianMigrationHistory1.2.csv"  # Ensure correct path
+    file_path = "IndianMigrationHistory.csv"  # Ensure correct path
     df = pd.read_csv(file_path)
     df = df.rename(columns=lambda x: x.strip())  # Remove leading/trailing spaces
     return df
