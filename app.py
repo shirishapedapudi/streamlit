@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import pydeck as pdk
 
 # Load dataset
@@ -68,6 +69,27 @@ view_state = pdk.ViewState(
 )
 
 st.pydeck_chart(pdk.Deck(layers=[layer], initial_view_state=view_state, tooltip={"text": "Migration Count: {selected_year}"}))
+
+
+# Prepare data for Sankey diagram
+sources = list(df["Migration by Gender Name"])  # Female/Male
+targets = list(df["Country Dest Name"])
+values = list(df["2000 [2000]"])  # Migration count in 2000
+
+fig = go.Figure(go.Sankey(
+    node=dict(
+        pad=15, thickness=20, line=dict(color="black", width=0.5),
+        label=sources + targets,  # Combine both source and target labels
+    ),
+    link=dict(
+        source=[sources.index(gender) for gender in sources],  
+        target=[len(sources) + targets.index(country) for country in targets],
+        value=values
+    )
+))
+
+st.subheader("✈️ Migration Flow by Gender 🌏 🏳️➡️🏳️")
+st.plotly_chart(fig)
 
 st.write("### 🧐 Key Insights")
 st.write(f"📌 **Total Migration Count in {selected_year}:** {filtered_df[selected_year].sum():,.0f}")
